@@ -2,7 +2,7 @@ package games.play4ever.nicenamegenerator;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class NiceNameGenerator extends JavaPlugin {
+public final class NiceNamesGenerator extends JavaPlugin {
 
     private NamesHandler namesHandler = null;
 

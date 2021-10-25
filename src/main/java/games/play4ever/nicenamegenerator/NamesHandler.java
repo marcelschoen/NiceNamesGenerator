@@ -60,7 +60,7 @@ public class NamesHandler {
         return text;
     }
 
-    public String replaceNamePlaceholdersWithPrefix(String prefix, String text, List<String> lastName, boolean mustBeUnique) {
+    private String replaceNamePlaceholdersWithPrefix(String prefix, String text, List<String> lastName, boolean mustBeUnique) {
         while(text.contains(prefix)) {
             boolean reUseLastName = prefix == PREFIX_LAST_NAME;
             String prePart = text.substring(0, text.indexOf(prefix));
@@ -136,6 +136,7 @@ public class NamesHandler {
         if(nameGeneratorMap.containsKey(alias)) {
             return nameGeneratorMap.get(alias).compose(numberOfSyllables);
         }
+        System.err.println("ALIAS NOT FOUND: " + alias);
         return "undefined";
     }
 
