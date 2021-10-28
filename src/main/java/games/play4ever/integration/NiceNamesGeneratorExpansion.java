@@ -2,7 +2,6 @@ package games.play4ever.integration;
 
 import games.play4ever.nicenamegenerator.NiceNamesGenerator;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -50,13 +49,11 @@ public class NiceNamesGeneratorExpansion extends PlaceholderExpansion {
 
     @Override
     public List<String> getPlaceholders() {
-        Bukkit.getLogger().info("((NiceNamesGenerator)) getPlaceholders()");
-        return Arrays.asList(new String[] { "name", "uname-*" } );
+        return Arrays.asList(new String[] { "name", "uname" } );
     }
 
     @Override
     public String onRequest(OfflinePlayer player, String params) {
-        Bukkit.getLogger().info("((NiceNamesGenerator)) onRequest() / params: " + params);
         if(params.startsWith("name") || params.startsWith("uname")) {
             return plugin.getNamesHandler().replacePapiNamePlaceholder(params);
         }
@@ -65,7 +62,6 @@ public class NiceNamesGeneratorExpansion extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player player, String params) {
-        Bukkit.getLogger().info("((NiceNamesGenerator)) onPlaceHolderRequest() / params: " + params);
         if(params.startsWith("name") || params.startsWith("uname")) {
             return plugin.getNamesHandler().replacePapiNamePlaceholder(params);
         }

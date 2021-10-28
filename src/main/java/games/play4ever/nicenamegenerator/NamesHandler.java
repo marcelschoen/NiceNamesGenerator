@@ -59,8 +59,6 @@ public class NamesHandler {
         if(papiPlaceholder.contains("-")) {
             type = papiPlaceholder.substring(papiPlaceholder.indexOf("-") + 1);
         }
-        Bukkit.getLogger().info("PAPI placeholder: " + papiPlaceholder);
-        Bukkit.getLogger().info("Type: " + type);
         String testType = type.contains(":") ? type.substring(0, type.indexOf(":")) : type;
         if(nameGeneratorMap.get(testType) == null) {
             Bukkit.getLogger().warning("Invalid type: " + type + ", using 'all' instead!");
@@ -75,7 +73,6 @@ public class NamesHandler {
     }
 
     private String generateName(String nameValue, boolean mustBeUnique) {
-        Bukkit.getLogger().info("Generate name: " + nameValue + ", unique: " + mustBeUnique);
         String alias = nameValue;
         if(alias.contains(":")) {
             alias = alias.substring(0, alias.indexOf(":"));
