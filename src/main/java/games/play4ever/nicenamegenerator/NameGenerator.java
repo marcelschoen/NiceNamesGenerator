@@ -303,6 +303,6 @@ public class NameGenerator {
         }
         if (syls > 1)
             name = name.concat(pureSyl(sur.get(c).toLowerCase()));
-        return name;
+        return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 }

@@ -2,12 +2,10 @@ package games.play4ever.nicenamegenerator;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -18,9 +16,6 @@ import java.util.Random;
  */
 public class NamesHandler {
 
-    public static final String PREFIX_NAME = "<name-";
-    public static final String PREFIX_LAST_NAME = "<lastName";
-    public static final String PREFIX_UNIQUE_NAME = "<uniqueName-";
     private static Random random = new Random();
     private Map<String, NameGenerator> nameGeneratorMap = new HashMap<>();
     private File namesFolder = null;
@@ -31,9 +26,8 @@ public class NamesHandler {
      * @param dataFolder The base plugin data folder.
      */
     public NamesHandler(File dataFolder) {
-        this.namesFolder = new File(dataFolder, "names/existing");
-        YamlConfiguration yamlConfiguration = new YamlConfiguration();
-        File namesDirectory = new File(dataFolder, "names");
+        this.namesFolder = new File(dataFolder, "existing");
+        File namesDirectory = dataFolder;
         if(namesDirectory.exists()) {
             if(!this.namesFolder.exists()) {
                 this.namesFolder.mkdirs();
@@ -53,56 +47,53 @@ public class NamesHandler {
         }
     }
 
-    public String replaceNamePlaceholders(String text, List<String> lastName) {
-        text = replaceNamePlaceholdersWithPrefix(PREFIX_LAST_NAME, text, lastName, false);
-        text = replaceNamePlaceholdersWithPrefix(PREFIX_NAME, text, lastName, false);
-        text = replaceNamePlaceholdersWithPrefix(PREFIX_UNIQUE_NAME, text, lastName, true);
-        return text;
-    }
-
-    private String replaceNamePlaceholdersWithPrefix(String prefix, String text, List<String> lastName, boolean mustBeUnique) {
-        while(text.contains(prefix)) {
-            boolean reUseLastName = prefix == PREFIX_LAST_NAME;
-            String prePart = text.substring(0, text.indexOf(prefix));
-            String namePart = text.substring(text.indexOf(prefix), text.indexOf(">") + 1);
-            String postPart = text.substring(text.indexOf(">") + 1);
-
-            String generatedName = "undefined";
-            if(reUseLastName) {
-                if(lastName != null && !lastName.isEmpty()) {
-                    generatedName = lastName.get(0);
-                }
-                Bukkit.getLogger().warning("Unable to use last name, as there is none yet. Use <lastName> placeholder only after one of the <name-*> placeholders!");
-            } else {
-                generatedName = generateName(namePart, mustBeUnique);
-            }
-            if(lastName != null) {
-                if(lastName.isEmpty()) {
-                    lastName.add(generatedName);
-                } else {
-                    lastName.set(0, generatedName);
-                }
-            }
-
-            text = prePart + generatedName + postPart;
+    /**
+     * Replaces the given PAPI placeholder with a randomly generated name string.
+     *
+     * @param papiPlaceholder The PAPI placeholder, e.g. "name-all:5"
+     * @return The randomly generated name.
+     */
+    public String replacePapiNamePlaceholder(String papiPlaceholder) {
+        String name = "";
+        String type = "all";
+        if(papiPlaceholder.contains("-")) {
+            type = papiPlaceholder.substring(papiPlaceholder.indexOf("-") + 1);
         }
-        return text;
+        Bukkit.getLogger().info("PAPI placeholder: " + papiPlaceholder);
+        Bukkit.getLogger().info("Type: " + type);
+        String testType = type.contains(":") ? type.substring(0, type.indexOf(":")) : type;
+        if(nameGeneratorMap.get(testType) == null) {
+            Bukkit.getLogger().warning("Invalid type: " + type + ", using 'all' instead!");
+            type = "all";
+        }
+        if(papiPlaceholder.startsWith("uname")) {
+            name = generateName(type, true);
+        } else {
+            name = generateName(type, false);
+        }
+        return name;
     }
 
     private String generateName(String nameValue, boolean mustBeUnique) {
-        String alias = nameValue.substring(nameValue.indexOf("-") + 1, nameValue.length() - 1);
+        Bukkit.getLogger().info("Generate name: " + nameValue + ", unique: " + mustBeUnique);
+        String alias = nameValue;
         if(alias.contains(":")) {
             alias = alias.substring(0, alias.indexOf(":"));
         }
         int minNumberOfSyllables = 2;
         int maxNumberOfSyllables = 0;
         if(nameValue.contains(":")) {
-            String numberArgument = nameValue.substring(nameValue.indexOf(":") + 1, nameValue.length() - 1);
-            if(numberArgument.contains("-")) {
-                minNumberOfSyllables = Integer.parseInt(numberArgument.substring(0, numberArgument.indexOf("-")));
-                maxNumberOfSyllables = Integer.parseInt(numberArgument.substring(numberArgument.indexOf("-") + 1));
-            } else {
-                minNumberOfSyllables = Integer.parseInt(numberArgument);
+            String numberArgument = nameValue.substring(nameValue.indexOf(":") + 1);
+            try {
+                if (numberArgument.contains("-")) {
+                    minNumberOfSyllables = Integer.parseInt(numberArgument.substring(0, numberArgument.indexOf("-")));
+                    maxNumberOfSyllables = Integer.parseInt(numberArgument.substring(numberArgument.indexOf("-") + 1));
+                } else {
+                    minNumberOfSyllables = Integer.parseInt(numberArgument);
+                }
+            } catch(NumberFormatException e) {
+                Bukkit.getLogger().warning("Failed to determine number of syllables from number argument '"
+                        + numberArgument + "', reason: " + e);
             }
         }
         int numberOfSyllables = minNumberOfSyllables;
@@ -136,7 +127,7 @@ public class NamesHandler {
         if(nameGeneratorMap.containsKey(alias)) {
             return nameGeneratorMap.get(alias).compose(numberOfSyllables);
         }
-        System.err.println("ALIAS NOT FOUND: " + alias);
+        Bukkit.getLogger().warning("ALIAS NOT FOUND: " + alias);
         return "undefined";
     }
 

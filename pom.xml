@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>games.play4ever</groupId>
-    <artifactId>NiceNameGenerator</artifactId>
+    <artifactId>NiceNamesGenerator</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>NiceNameGenerator</name>
+    <name>NiceNamesGenerator</name>
 
     <description>Generates names for NPCs, locations etc.</description>
     <properties>
@@ -76,6 +76,10 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>placeholderapi</id>
+            <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -107,6 +111,12 @@
             <artifactId>powermock-api-mockito</artifactId>
             <version>1.6.4</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.9.2</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
