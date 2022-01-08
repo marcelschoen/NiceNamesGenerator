@@ -5,8 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * The NiceNamesGenerator plugin.
@@ -68,25 +66,5 @@ public final class NiceNamesGenerator extends JavaPlugin {
     public void onDisable() {
         Bukkit.getLogger().info("((NiceNamesGenerator)) Disabled...");
         namesHandler = null;
-    }
-
-    /**
-     * Helper method to return the major version that the server is running.
-     *
-     * This is needed because in 1.17, NMS is no longer versioned.
-     *
-     * @return the major version of Minecraft the server is running
-     */
-    public static int minecraftVersion() {
-        try {
-            final Matcher matcher = Pattern.compile("\\(MC: (\\d)\\.(\\d+)\\.?(\\d+?)?\\)").matcher(Bukkit.getVersion());
-            if (matcher.find()) {
-                return Integer.parseInt(matcher.toMatchResult().group(2), 10);
-            } else {
-                throw new IllegalArgumentException(String.format("No match found in '%s'", Bukkit.getVersion()));
-            }
-        } catch (final IllegalArgumentException ex) {
-            throw new RuntimeException("Failed to determine Minecraft version", ex);
-        }
     }
 }

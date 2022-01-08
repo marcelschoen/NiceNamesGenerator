@@ -8,6 +8,9 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 import java.util.List;
 
+import static games.play4ever.nicenamegenerator.NamesHandler.NAME;
+import static games.play4ever.nicenamegenerator.NamesHandler.UNAME;
+
 /**
  * Hooks into Placeholder API (PAPI) to allow to get a generated
  * name simply by using a placeholder.
@@ -49,12 +52,12 @@ public class NiceNamesGeneratorExpansion extends PlaceholderExpansion {
 
     @Override
     public List<String> getPlaceholders() {
-        return Arrays.asList(new String[] { "name", "uname" } );
+        return Arrays.asList(new String[] { NAME, UNAME } );
     }
 
     @Override
     public String onRequest(OfflinePlayer player, String params) {
-        if(params.startsWith("name") || params.startsWith("uname")) {
+        if(params.startsWith(NAME) || params.startsWith(UNAME)) {
             return plugin.getNamesHandler().replacePapiNamePlaceholder(params);
         }
         return null; // Placeholder is unknown by the Expansion
@@ -62,7 +65,7 @@ public class NiceNamesGeneratorExpansion extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player player, String params) {
-        if(params.startsWith("name") || params.startsWith("uname")) {
+        if(params.startsWith(NAME) || params.startsWith(UNAME)) {
             return plugin.getNamesHandler().replacePapiNamePlaceholder(params);
         }
         return null; // Placeholder is unknown by the Expansion

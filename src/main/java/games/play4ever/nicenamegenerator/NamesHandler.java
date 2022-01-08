@@ -16,6 +16,9 @@ import java.util.Random;
  */
 public class NamesHandler {
 
+    public static final String UNAME = "uname";
+    public static final String NAME = "name";
+
     private static Random random = new Random();
     private Map<String, NameGenerator> nameGeneratorMap = new HashMap<>();
     private File namesFolder = null;
@@ -66,7 +69,7 @@ public class NamesHandler {
             Bukkit.getLogger().warning("Invalid type: " + type + ", using 'all' instead!");
             type = "all";
         }
-        if(papiPlaceholder.startsWith("uname")) {
+        if(papiPlaceholder.startsWith(UNAME)) {
             name = generateName(type, true);
         } else {
             name = generateName(type, false);
