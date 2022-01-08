@@ -1,9 +1,9 @@
 name: NiceNameGenerator
 version: '${project.version}'
 main: games.play4ever.nicenamegenerator.NiceNamesGenerator
-api-version: 1.17
+api-version: 1.18
 prefix: NICENAMES
 load: STARTUP
 authors: [ Marcel Schoen ]
 description: Generates names for NPCs, locations etc.
-website: http://www.acme.com
+website: https://www.spigotmc.org/resources/nicenamesgenerator.97212/

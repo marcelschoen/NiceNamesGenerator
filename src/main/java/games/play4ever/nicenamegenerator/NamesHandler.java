@@ -19,6 +19,7 @@ public class NamesHandler {
     private static Random random = new Random();
     private Map<String, NameGenerator> nameGeneratorMap = new HashMap<>();
     private File namesFolder = null;
+    static ThreadLocal<String> lastGeneratedName = new ThreadLocal<>();
 
     /**
      * Processes the name generator configuration
@@ -36,7 +37,7 @@ public class NamesHandler {
             for(String nameFileEntry : nameFileEntries) {
                 File nameFile = new File(namesDirectory, nameFileEntry);
                 try {
-                    NameGenerator nameGenerator = new NameGenerator(nameFile);
+                    NewNameGenerator nameGenerator = new NewNameGenerator(nameFile);
                     String alias = nameFileEntry.substring(0, nameFileEntry.indexOf("."));
                     nameGeneratorMap.put(alias, nameGenerator);
                 } catch(IOException e) {
@@ -44,6 +45,7 @@ public class NamesHandler {
                     e.printStackTrace();
                 }
             }
+            nameGeneratorMap.put("lastname", new LastNameGenerator());
         }
     }
 
@@ -116,6 +118,9 @@ public class NamesHandler {
                 e.printStackTrace();
             }
         }
+
+        // Store generated name in thread-local variable to re-use in in following commands etc.
+        lastGeneratedName.set(generatedName);
 
         return generatedName;
     }
