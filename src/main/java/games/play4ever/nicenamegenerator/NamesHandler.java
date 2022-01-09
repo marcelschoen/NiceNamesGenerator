@@ -49,6 +49,7 @@ public class NamesHandler {
                 }
             }
             nameGeneratorMap.put("lastname", new LastNameGenerator());
+            nameGeneratorMap.put("lastnameLowercased", new LastNameGeneratorLowercased());
         }
     }
 
@@ -122,24 +123,19 @@ public class NamesHandler {
             }
         }
 
-        // Store generated name in thread-local variable to re-use in in following commands etc.
-        lastGeneratedName.set(generatedName);
-
         return generatedName;
     }
 
     private String getName(String alias, int numberOfSyllables) {
         if(nameGeneratorMap.containsKey(alias)) {
-            return nameGeneratorMap.get(alias).compose(numberOfSyllables);
+            String name = nameGeneratorMap.get(alias).compose(numberOfSyllables);
+            if(!alias.contains("lastname")) {
+                // Store generated name in thread-local variable to re-use in in following commands etc.
+                lastGeneratedName.set(name);
+            }
+            return name;
         }
         Bukkit.getLogger().warning("ALIAS NOT FOUND: " + alias);
         return "undefined";
-    }
-
-    /**
-     * Cleans up the NPC data.
-     */
-    public void cleanUp() {
-        nameGeneratorMap.clear();
     }
 }
