@@ -31,7 +31,8 @@ public final class NiceNamesGenerator extends JavaPlugin {
         // Small check to make sure that PlaceholderAPI is installed
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             Bukkit.getLogger().info("((NiceNamesGenerator)) Registering PAPI expansion...");
-            new NiceNamesGeneratorExpansion(this).register();
+            new NiceNamesGeneratorExpansion(this, "nicenames").register();
+            new NiceNamesGeneratorExpansion(this, "nnms").register();
         } else {
             Bukkit.getLogger().info("((NiceNamesGenerator)) PlaceholderAPI not found.");
         }

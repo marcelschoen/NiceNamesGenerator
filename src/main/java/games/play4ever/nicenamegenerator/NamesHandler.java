@@ -16,8 +16,13 @@ import java.util.Random;
  */
 public class NamesHandler {
 
-    public static final String UNAME = "uname";
-    public static final String NAME = "name";
+    public enum NAMETYPE {
+        name,
+        uname,
+        uniquename,
+        lastname,
+        lname
+    }
 
     private static Random random = new Random();
     private Map<String, NameGenerator> nameGeneratorMap = new HashMap<>();
@@ -48,8 +53,6 @@ public class NamesHandler {
                     e.printStackTrace();
                 }
             }
-            nameGeneratorMap.put("lastname", new LastNameGenerator());
-            nameGeneratorMap.put("lastnameLowercased", new LastNameGeneratorLowercased());
         }
     }
 
@@ -60,6 +63,7 @@ public class NamesHandler {
      * @return The randomly generated name.
      */
     public String replacePapiNamePlaceholder(String papiPlaceholder) {
+        papiPlaceholder = papiPlaceholder.toLowerCase();
         String name = "";
         String type = "all";
         if(papiPlaceholder.contains("-")) {
@@ -70,7 +74,20 @@ public class NamesHandler {
             Bukkit.getLogger().warning("Invalid type: " + type + ", using 'all' instead!");
             type = "all";
         }
-        if(papiPlaceholder.startsWith(UNAME)) {
+
+        if(papiPlaceholder.startsWith(NAMETYPE.lname.name())
+                || papiPlaceholder.startsWith(NAMETYPE.lastname.name())) {
+            String lastName = NamesHandler.lastGeneratedName.get();
+            // If the placeholder is something like "lastnameLow" or "lastnameLowercase"
+            // or "lnameLow" etc., it shall be lowercased.
+            if(papiPlaceholder.contains("low")) {
+                lastName = lastName.toLowerCase();
+            }
+            return lastName;
+        }
+
+        if(papiPlaceholder.startsWith(NAMETYPE.uname.name())
+                || papiPlaceholder.startsWith(NAMETYPE.uniquename.name())) {
             name = generateName(type, true);
         } else {
             name = generateName(type, false);

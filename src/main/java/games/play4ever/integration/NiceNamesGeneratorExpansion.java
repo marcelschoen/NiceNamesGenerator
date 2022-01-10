@@ -1,5 +1,6 @@
 package games.play4ever.integration;
 
+import games.play4ever.nicenamegenerator.NamesHandler;
 import games.play4ever.nicenamegenerator.NiceNamesGenerator;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
@@ -7,9 +8,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static games.play4ever.nicenamegenerator.NamesHandler.NAME;
-import static games.play4ever.nicenamegenerator.NamesHandler.UNAME;
+import java.util.stream.Collectors;
 
 /**
  * Hooks into Placeholder API (PAPI) to allow to get a generated
@@ -20,13 +19,15 @@ import static games.play4ever.nicenamegenerator.NamesHandler.UNAME;
 public class NiceNamesGeneratorExpansion extends PlaceholderExpansion {
 
     private final NiceNamesGenerator plugin;
+    private final String prefix;
 
     /**
      * Creates the expansion instance.
      *
      * @param plugin The name generator handler.
      */
-    public NiceNamesGeneratorExpansion(NiceNamesGenerator plugin) {
+    public NiceNamesGeneratorExpansion(NiceNamesGenerator plugin, String prefix) {
+        this.prefix = prefix;
         this.plugin = plugin;
     }
 
@@ -37,7 +38,7 @@ public class NiceNamesGeneratorExpansion extends PlaceholderExpansion {
 
     @Override
     public String getIdentifier() {
-        return "nicenames";
+        return prefix;
     }
 
     @Override
@@ -52,21 +53,25 @@ public class NiceNamesGeneratorExpansion extends PlaceholderExpansion {
 
     @Override
     public List<String> getPlaceholders() {
-        return Arrays.asList(new String[] { NAME, UNAME } );
+        return Arrays.stream(NamesHandler.NAMETYPE.values()).map(v -> v.name()).collect(Collectors.toList());
     }
 
     @Override
     public String onRequest(OfflinePlayer player, String params) {
-        if(params.startsWith(NAME) || params.startsWith(UNAME)) {
-            return plugin.getNamesHandler().replacePapiNamePlaceholder(params);
+        for(NamesHandler.NAMETYPE type : NamesHandler.NAMETYPE.values()) {
+            if(params.startsWith(type.name())) {
+                return plugin.getNamesHandler().replacePapiNamePlaceholder(params);
+            }
         }
         return null; // Placeholder is unknown by the Expansion
     }
 
     @Override
     public String onPlaceholderRequest(Player player, String params) {
-        if(params.startsWith(NAME) || params.startsWith(UNAME)) {
-            return plugin.getNamesHandler().replacePapiNamePlaceholder(params);
+        for(NamesHandler.NAMETYPE type : NamesHandler.NAMETYPE.values()) {
+            if(params.startsWith(type.name())) {
+                return plugin.getNamesHandler().replacePapiNamePlaceholder(params);
+            }
         }
         return null; // Placeholder is unknown by the Expansion
     }
